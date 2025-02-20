@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 513074433257653218}
   - component: {fileID: 6125969155609548116}
   - component: {fileID: 8108509112489991346}
+  - component: {fileID: -8672251653971782847}
   m_Layer: 0
   m_Name: FallenAngel1Player
   m_TagString: Untagged
@@ -120,6 +121,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-8672251653971782847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900151272745125326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 036dd0daa477a3745a90a699cc13dec0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardPositions: []
+  moveSpeed: 5
 --- !u!1 &8120117156829083967
 GameObject:
   m_ObjectHideFlags: 0
