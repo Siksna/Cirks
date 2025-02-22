@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Versioning;
 using UnityEngine;
-using System.IO;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -14,24 +12,55 @@ public class PlayerScript : MonoBehaviour
 
     private const string textFileName = "playerNames";
 
+    // Waypoints array
+    public Transform[] waypoints;  // Set this in the inspector or dynamically find waypoints in the scene
+
+    List<GameObject> allPlayers = new List<GameObject>();
+
     void Start()
     {
-        characterIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
-        GameObject mainCharacter = Instantiate(playerPrefabs[characterIndex],
-            spawnPoint.transform.position, Quaternion.identity);
-        mainCharacter.GetComponent<NameScript>().SetPlayerName(
-            PlayerPrefs.GetString("PlayerName"));
+        int characterIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
 
-        otherPlayers = new int[PlayerPrefs.GetInt("PlayerCount")];
-        string[] nameArray = ReadLinesFromFile(textFileName);
+        // Spawn main player at the first waypoint
+        GameObject mainCharacter = Instantiate(playerPrefabs[characterIndex], waypoints[0].position, Quaternion.identity);
+        mainCharacter.GetComponent<NameScript>().SetPlayerName(PlayerPrefs.GetString("PlayerName"));
 
-        for (int i = 0; i < otherPlayers.Length - 1; i++)
+        // Set waypoints in PlayerMovement for main character
+        PlayerMovement mainPlayerMovement = mainCharacter.GetComponent<PlayerMovement>();
+        mainPlayerMovement.InitializeWaypoints(waypoints);  // Initialize waypoints
+
+        Debug.Log(mainPlayerMovement.waypoints);
+        // Set the initial waypoint position for the player
+        mainPlayerMovement.SetWaypoint(waypoints[0].position);
+        allPlayers.Add(mainCharacter);
+
+        Debug.Log($"Main Player Spawned: {mainCharacter.name} at {waypoints[0].position}");
+
+        int otherPlayerCount = PlayerPrefs.GetInt("PlayerCount") - 1;
+        string[] nameArray = ReadLinesFromFile("playerNames");
+
+        // Instantiate other players at the first waypoint
+        for (int i = 0; i < otherPlayerCount; i++)
         {
-            spawnPoint.transform.position += new Vector3(0.2f, 0, 0.08f);
-            index = Random.Range(0, playerPrefabs.Length - 1);
-            GameObject character = Instantiate(playerPrefabs[index], spawnPoint.transform.position, Quaternion.identity);
-            character.GetComponent<NameScript>().SetPlayerName(nameArray[Random.Range(0, nameArray.Length - 1)]);
+            int index = Random.Range(0, playerPrefabs.Length);
+            GameObject character = Instantiate(playerPrefabs[index], waypoints[0].position, Quaternion.identity);
+            character.GetComponent<NameScript>().SetPlayerName(nameArray[Random.Range(0, nameArray.Length)]);
+
+            // Set waypoints for the other players
+            PlayerMovement characterMovement = character.GetComponent<PlayerMovement>();
+            characterMovement.InitializeWaypoints(waypoints); // Initialize waypoints
+
+            characterMovement.SetWaypoint(waypoints[0].position);
+            allPlayers.Add(character);
+
+            Debug.Log($"Other Player Spawned: {character.name} at {waypoints[0].position}");
         }
+        Debug.Log(mainPlayerMovement.waypoints);
+
+
+        // Now, assign waypoints to players
+        AssignWaypointsToPlayers(allPlayers);
+        Debug.Log(mainPlayerMovement.waypoints);
     }
 
     string[] ReadLinesFromFile(string fileName)
@@ -45,42 +74,24 @@ public class PlayerScript : MonoBehaviour
         return new string[0];
     }
 
-    [SerializeField] private BillboardType billboardType;
-
-    [Header("Lock Rotation")]
-    [SerializeField] private bool lockX;
-    [SerializeField] private bool lockY;
-    [SerializeField] private bool lockZ;
-
-    private Vector3 originalRotation;
-
-    public enum BillboardType { LookAtCamera, CameraForward };
-
-    private void Awake()
+    void AssignWaypointsToPlayers(List<GameObject> allPlayers)
     {
-        originalRotation = transform.rotation.eulerAngles;
-    }
+        int waypointIndex = 0;
 
-    // Use Late update so everything should have finished moving.
-    void LateUpdate()
-    {
-        // There are two ways people billboard things.
-        switch (billboardType)
+        foreach (GameObject player in allPlayers)
         {
-            case BillboardType.LookAtCamera:
-                transform.LookAt(Camera.main.transform.position, Vector3.up);
+            if (waypointIndex < waypoints.Length)
+            {
+                // Assign the current waypoint to the player
+                player.GetComponent<PlayerMovement>().SetWaypoint(waypoints[waypointIndex].position, waypointIndex);
+
+                Debug.Log($"{player.name} assigned to Waypoint {waypointIndex} at {waypoints[waypointIndex].position}");
+            }
+            else
+            {
+                Debug.LogWarning("Not enough waypoints for all players.");
                 break;
-            case BillboardType.CameraForward:
-                transform.forward = Camera.main.transform.forward;
-                break;
-            default:
-                break;
+            }
         }
-        // Modify the rotation in Euler space to lock certain dimensions.
-        Vector3 rotation = transform.rotation.eulerAngles;
-        if (lockX) { rotation.x = originalRotation.x; }
-        if (lockY) { rotation.y = originalRotation.y; }
-        if (lockZ) { rotation.z = originalRotation.z; }
-        transform.rotation = Quaternion.Euler(rotation);
     }
 }

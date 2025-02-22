@@ -16,13 +16,12 @@ public class RolledNumberScript : MonoBehaviour
     }
     
 
-    // Update is called once per frame
     void Update()
     {
         if (diceRollScript != false)
         {
             if (diceRollScript.islanded)
-                rolledNumberText.text = diceRollScript.diceFaceNum;
+               rolledNumberText.text = diceRollScript.diceFaceNum.ToString();
 
             else
                 rolledNumberText.text = "?";

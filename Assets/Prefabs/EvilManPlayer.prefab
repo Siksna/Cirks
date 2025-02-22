@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 7528897223363078162}
   - component: {fileID: 5013626281278676637}
   - component: {fileID: 997819783579114204}
+  - component: {fileID: -3015601567489643294}
   m_Layer: 0
   m_Name: EvilManPlayer
   m_TagString: Untagged
@@ -304,5 +305,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036dd0daa477a3745a90a699cc13dec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPositions: []
-  moveSpeed: 5
+  waypoints: []
+--- !u!114 &-3015601567489643294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7581366156733079989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64d1642d5f18c894d9e0a4528ef33d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  billboardType: 0

@@ -14,15 +14,29 @@ public class SideDetectionScript : MonoBehaviour
     private void OnTriggerStay(Collider sideCollider)
     {
         if (diceRollScript != null)
+        {
             if (diceRollScript.GetComponent<Rigidbody>().velocity == Vector3.zero)
             {
                 diceRollScript.islanded = true;
-                diceRollScript.diceFaceNum = sideCollider.name;
+
+                // Convert the side name (string) to an integer
+                if (int.TryParse(sideCollider.name, out int diceValue))
+                {
+                    diceRollScript.diceFaceNum = diceValue;
+                }
+                else
+                {
+                    Debug.LogError($"Failed to parse dice face number: {sideCollider.name}");
+                }
             }
             else
+            {
                 diceRollScript.islanded = false;
+            }
+        }
         else
-            Debug.LogError("DiceRollScript is not found in a scene!");
+        {
+            Debug.LogError("DiceRollScript not found in scene.");
+        }
     }
-    }
-    
+}
