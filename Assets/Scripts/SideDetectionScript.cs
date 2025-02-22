@@ -19,7 +19,6 @@ public class SideDetectionScript : MonoBehaviour
             {
                 diceRollScript.islanded = true;
 
-                // Convert the side name (string) to an integer
                 if (int.TryParse(sideCollider.name, out int diceValue))
                 {
                     diceRollScript.diceFaceNum = diceValue;

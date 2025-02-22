@@ -9,11 +9,18 @@ public class DiceRollScript : MonoBehaviour
     Vector3 position;
     [SerializeField] private float maxRandForceVal, startRollingForce;
     float forceX, forceY, forceZ;
-    public int diceFaceNum; // Changed from string to int
+    public int diceFaceNum; 
     public bool islanded = false;
     public bool firstThrow = false;
 
-    public GameObject player; // Reference to the player object
+    public TurnManager turnManager;
+    public GameObject player; 
+
+
+    private void Start()
+    {
+        turnManager = FindObjectOfType<TurnManager>();  
+    }
 
     private void Awake()
     {
@@ -30,31 +37,49 @@ public class DiceRollScript : MonoBehaviour
 
     public void RollDice()
     {
-        // Call MovePlayer after dice lands
+        player = turnManager.GetCurrentPlayer(); 
+
+        if (player == null)
+        {
+            Debug.LogError("Current player is null!");
+            return;
+        }
+
+        Debug.Log($"{player.name} is rolling the dice.");
+
         StartCoroutine(WaitForDiceToLand());
-        
+
         rigidbody.isKinematic = false;
         forceX = Random.Range(0, maxRandForceVal);
         forceY = Random.Range(0, maxRandForceVal);
         forceZ = Random.Range(0, maxRandForceVal);
-        rigidbody.AddForce(Vector3.up * Random.Range(200, startRollingForce));
+        rigidbody.AddForce(Vector3.up * Random.Range(800, startRollingForce));
         rigidbody.AddTorque(forceX, forceY, forceZ);
     }
 
     IEnumerator WaitForDiceToLand()
     {
         yield return new WaitUntil(() => islanded);
-        
-        // Ensure diceFaceNum is set correctly before calling MovePlayer
+
         if (player != null)
         {
-            player.GetComponent<PlayerMovement>().MovePlayer(diceFaceNum); // HEHREREEEEEE
+            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+
+            if (playerMovement != null)
+            {
+                playerMovement.MovePlayer(diceFaceNum);
+                yield return new WaitUntil(() => !playerMovement.IsMoving);
+            }
+
+            //yield return new WaitForSeconds(1f); BROKEN?????? PRIEKSKAM TIMING VAJAG
+            turnManager.NextTurn(); 
         }
         else
         {
             Debug.LogError("Player reference is missing in DiceRollScript!");
         }
     }
+
 
     public void ResetDice()
     {

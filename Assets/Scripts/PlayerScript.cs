@@ -12,55 +12,42 @@ public class PlayerScript : MonoBehaviour
 
     private const string textFileName = "playerNames";
 
-    // Waypoints array
-    public Transform[] waypoints;  // Set this in the inspector or dynamically find waypoints in the scene
+    public Transform[] waypoints; 
 
     List<GameObject> allPlayers = new List<GameObject>();
 
     void Start()
+{
+    TurnManager turnManager = FindObjectOfType<TurnManager>(); 
+
+    int characterIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
+    GameObject mainCharacter = Instantiate(playerPrefabs[characterIndex], waypoints[0].position, Quaternion.identity);
+    mainCharacter.GetComponent<NameScript>().SetPlayerName(PlayerPrefs.GetString("PlayerName"));
+    mainCharacter.GetComponent<PlayerMovement>().InitializeWaypoints(waypoints);
+
+    turnManager.allPlayers.Add(mainCharacter); 
+    allPlayers.Add(mainCharacter);
+
+    int otherPlayerCount = PlayerPrefs.GetInt("PlayerCount") - 1;
+    string[] nameArray = ReadLinesFromFile("playerNames");
+
+    for (int i = 0; i < otherPlayerCount; i++)
     {
-        int characterIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
+        int index = Random.Range(0, playerPrefabs.Length);
+        GameObject character = Instantiate(playerPrefabs[index], waypoints[0].position, Quaternion.identity);
+        character.GetComponent<NameScript>().SetPlayerName(nameArray[Random.Range(0, nameArray.Length)]);
+        character.GetComponent<PlayerMovement>().InitializeWaypoints(waypoints);
 
-        // Spawn main player at the first waypoint
-        GameObject mainCharacter = Instantiate(playerPrefabs[characterIndex], waypoints[0].position, Quaternion.identity);
-        mainCharacter.GetComponent<NameScript>().SetPlayerName(PlayerPrefs.GetString("PlayerName"));
+        turnManager.allPlayers.Add(character); 
+        allPlayers.Add(character);
+    }
 
-        // Set waypoints in PlayerMovement for main character
-        PlayerMovement mainPlayerMovement = mainCharacter.GetComponent<PlayerMovement>();
-        mainPlayerMovement.InitializeWaypoints(waypoints);  // Initialize waypoints
-
-        Debug.Log(mainPlayerMovement.waypoints);
-        // Set the initial waypoint position for the player
-        mainPlayerMovement.SetWaypoint(waypoints[0].position);
-        allPlayers.Add(mainCharacter);
-
-        Debug.Log($"Main Player Spawned: {mainCharacter.name} at {waypoints[0].position}");
-
-        int otherPlayerCount = PlayerPrefs.GetInt("PlayerCount") - 1;
-        string[] nameArray = ReadLinesFromFile("playerNames");
-
-        // Instantiate other players at the first waypoint
-        for (int i = 0; i < otherPlayerCount; i++)
-        {
-            int index = Random.Range(0, playerPrefabs.Length);
-            GameObject character = Instantiate(playerPrefabs[index], waypoints[0].position, Quaternion.identity);
-            character.GetComponent<NameScript>().SetPlayerName(nameArray[Random.Range(0, nameArray.Length)]);
-
-            // Set waypoints for the other players
-            PlayerMovement characterMovement = character.GetComponent<PlayerMovement>();
-            characterMovement.InitializeWaypoints(waypoints); // Initialize waypoints
-
-            characterMovement.SetWaypoint(waypoints[0].position);
-            allPlayers.Add(character);
-
-            Debug.Log($"Other Player Spawned: {character.name} at {waypoints[0].position}");
-        }
-        Debug.Log(mainPlayerMovement.waypoints);
+    turnManager.currentPlayer = turnManager.allPlayers[0]; 
+    Debug.Log("All players added to TurnManager");
 
 
-        // Now, assign waypoints to players
+
         AssignWaypointsToPlayers(allPlayers);
-        Debug.Log(mainPlayerMovement.waypoints);
     }
 
     string[] ReadLinesFromFile(string fileName)
@@ -82,7 +69,6 @@ public class PlayerScript : MonoBehaviour
         {
             if (waypointIndex < waypoints.Length)
             {
-                // Assign the current waypoint to the player
                 player.GetComponent<PlayerMovement>().SetWaypoint(waypoints[waypointIndex].position, waypointIndex);
 
                 Debug.Log($"{player.name} assigned to Waypoint {waypointIndex} at {waypoints[waypointIndex].position}");
