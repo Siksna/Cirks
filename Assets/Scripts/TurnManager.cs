@@ -9,7 +9,7 @@ public class TurnManager : MonoBehaviour
     public GameObject currentPlayer;
     private int currentPlayerIndex = 0;
 
-    public TextMeshProUGUI playerTurnText; // Reference to TextMeshPro UI element
+    public TextMeshProUGUI playerTurnText; 
 
     void Start()
     {
@@ -19,7 +19,7 @@ public class TurnManager : MonoBehaviour
 
             Debug.Log($"Starting game with {allPlayers.Count} players. First player: {currentPlayer.name}");
 
-            UpdatePlayerTurnText();  // Display current player's name
+            UpdatePlayerTurnText();  
         }
         else
         {
@@ -31,7 +31,7 @@ public class TurnManager : MonoBehaviour
     {
         if (allPlayers.Count > 0)
         {
-            currentPlayerIndex = 0; // Set to the first player
+            currentPlayerIndex = 0; 
             Debug.Log("First player set: " + allPlayers[currentPlayerIndex].name);
         }
         else

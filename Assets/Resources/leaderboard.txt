@@ -2,3 +2,5 @@ Aes - Rolls: 11, Time: 94.37 seconds
 
 AlbertsNr2 - Rolls: 10, Time: 96.32 seconds
 
+Iveta - Rolls: 8, Time: 164.98 seconds
+

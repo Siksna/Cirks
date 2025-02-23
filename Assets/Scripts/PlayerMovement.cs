@@ -10,10 +10,10 @@ public class PlayerMovement : MonoBehaviour
     public DiceRollScript diceRollScript;
     public Transform[] waypoints;
 
-    private int totalDiceRolls = 0;  // Track the total dice rolls
-    private float startTime;  // Start time to calculate elapsed time
+    private int totalDiceRolls = 0;  
+    private float startTime;  
 
-    private WinScreenController winScreenController;  // Reference to WinScreenController
+    private WinScreenController winScreenController;  
 
     public void InitializeWaypoints(Transform[] waypointsArray)
     {
@@ -46,13 +46,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         int nextWaypointIndex = currentWaypointIndex + diceRoll;
-        totalDiceRolls++;  // Increment dice roll count
+        totalDiceRolls++;  
 
-        // Check if the player reached the last waypoint (36th waypoint)
         if (nextWaypointIndex >= waypoints.Length - 1)
         {
-            nextWaypointIndex = 36; // Ensure they stop exactly at waypoint 36
-            StartCoroutine(MoveThroughWaypoints(nextWaypointIndex, true)); // Trigger win condition
+            nextWaypointIndex = 36; 
+            StartCoroutine(MoveThroughWaypoints(nextWaypointIndex, true)); 
         }
         else if (nextWaypointIndex < waypoints.Length && diceRoll != 0)
         {
@@ -70,13 +69,11 @@ public class PlayerMovement : MonoBehaviour
         float moveSpeed = 6f;
         int startWaypoint = currentWaypointIndex;
 
-        // Check if the target index goes beyond the available waypoints
         if (targetWaypointIndex >= waypoints.Length)
         {
-            targetWaypointIndex = waypoints.Length - 1; // Stay at the last waypoint if going beyond
+            targetWaypointIndex = waypoints.Length - 1; 
         }
 
-        // Move forward to the target waypoint
         for (int i = startWaypoint + 1; i <= targetWaypointIndex; i++)
         {
             Vector3 targetPosition = waypoints[i].position;
@@ -92,19 +89,17 @@ public class PlayerMovement : MonoBehaviour
             currentWaypointIndex = i;
         }
 
-        // Trigger the win condition if the player has won
         if (hasWon)
         {
             if (winScreenController == null)
             {
-                // Find the WinScreenController dynamically if not already assigned
                 winScreenController = FindObjectOfType<WinScreenController>();
             }
 
             if (winScreenController != null)
             {
-                float elapsedTime = Time.time - startTime;  // Calculate the elapsed time
-                winScreenController.ShowWinScreen(gameObject, totalDiceRolls, elapsedTime);  // Display the win screen
+                float elapsedTime = Time.time - startTime;  
+                winScreenController.ShowWinScreen(gameObject, totalDiceRolls, elapsedTime);  
             }
             else
             {
@@ -124,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        startTime = Time.time; // Start timer when game begins
+        startTime = Time.time; 
         if (waypoints == null || waypoints.Length == 0)
         {
             Debug.LogError("Waypoints not set in PlayerMovement at the start!");

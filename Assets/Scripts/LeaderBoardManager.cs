@@ -37,10 +37,10 @@ public class LeaderboardManager : MonoBehaviour
 
             foreach (var line in lines)
             {
-                string cleanLine = line.Trim(); // Remove hidden characters
+                string cleanLine = line.Trim(); 
 
                 if (string.IsNullOrWhiteSpace(cleanLine))
-                    continue; // Skip empty lines
+                    continue; 
 
                 Debug.Log($"Reading line: {cleanLine}");
 
@@ -52,10 +52,9 @@ public class LeaderboardManager : MonoBehaviour
                     continue;
                 }
 
-                string playerName = parts[0].Trim(); // Extract player name
+                string playerName = parts[0].Trim(); 
                 string statsPart = parts[1].Trim();
 
-                // Extract dice rolls
                 int rollsStart = statsPart.IndexOf("Rolls:") + "Rolls:".Length;
                 int rollsEnd = statsPart.IndexOf(",");
                 if (rollsStart < "Rolls:".Length || rollsEnd == -1)
@@ -65,7 +64,6 @@ public class LeaderboardManager : MonoBehaviour
                 }
                 string rollsString = statsPart.Substring(rollsStart, rollsEnd - rollsStart).Trim();
 
-                // Extract time
                 int timeStart = statsPart.IndexOf("Time:") + "Time:".Length;
                 int timeEnd = statsPart.IndexOf("seconds");
                 if (timeStart < "Time:".Length || timeEnd == -1)
@@ -75,7 +73,6 @@ public class LeaderboardManager : MonoBehaviour
                 }
                 string timeString = statsPart.Substring(timeStart, timeEnd - timeStart).Trim();
 
-                // Convert to numbers safely
                 if (int.TryParse(rollsString, out int diceRolls) && float.TryParse(timeString, out float timeElapsed))
                 {
                     leaderboard.Add(new PlayerData(playerName, diceRolls, timeElapsed));
@@ -87,7 +84,6 @@ public class LeaderboardManager : MonoBehaviour
                 }
             }
 
-            // Sort by dice rolls (ascending)
             leaderboard.Sort((x, y) => x.diceRolls.CompareTo(y.diceRolls));
         }
         else
