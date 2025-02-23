@@ -9,17 +9,30 @@ public class DiceRollScript : MonoBehaviour
     Vector3 position;
     [SerializeField] private float maxRandForceVal, startRollingForce;
     float forceX, forceY, forceZ;
-    public int diceFaceNum; 
+    public int diceFaceNum;
     public bool islanded = false;
     public bool firstThrow = false;
 
     public TurnManager turnManager;
-    public GameObject player; 
+    public GameObject player;
+
+    private bool canRoll = true;  
+    [SerializeField] private float waitTime = 0.1f;  
 
 
     private void Start()
     {
-        turnManager = FindObjectOfType<TurnManager>();  
+        turnManager = FindObjectOfType<TurnManager>();
+
+        if (turnManager != null)
+        {
+            turnManager.SetFirstPlayer();
+            player = turnManager.GetCurrentPlayer();
+        }
+        else
+        {
+            Debug.LogError("TurnManager not found in the scene!");
+        }
     }
 
     private void Awake()
@@ -37,7 +50,9 @@ public class DiceRollScript : MonoBehaviour
 
     public void RollDice()
     {
-        player = turnManager.GetCurrentPlayer(); 
+        if (!canRoll) return; 
+
+        player = turnManager.GetCurrentPlayer();
 
         if (player == null)
         {
@@ -47,19 +62,26 @@ public class DiceRollScript : MonoBehaviour
 
         Debug.Log($"{player.name} is rolling the dice.");
 
-        StartCoroutine(WaitForDiceToLand());
-
         rigidbody.isKinematic = false;
+        islanded = false;  
+
         forceX = Random.Range(0, maxRandForceVal);
         forceY = Random.Range(0, maxRandForceVal);
         forceZ = Random.Range(0, maxRandForceVal);
         rigidbody.AddForce(Vector3.up * Random.Range(800, startRollingForce));
         rigidbody.AddTorque(forceX, forceY, forceZ);
+
+        canRoll = false;  
+
+        StartCoroutine(WaitForDiceToLand());
     }
 
     IEnumerator WaitForDiceToLand()
     {
-        yield return new WaitUntil(() => islanded);
+        yield return new WaitUntil(() => rigidbody.IsSleeping()); 
+
+        islanded = true;
+        Debug.Log("Dice landed! Result: " + diceFaceNum);
 
         if (player != null)
         {
@@ -67,19 +89,24 @@ public class DiceRollScript : MonoBehaviour
 
             if (playerMovement != null)
             {
+                Debug.Log($"{player.name} is moving {diceFaceNum} spaces.");
                 playerMovement.MovePlayer(diceFaceNum);
+
                 yield return new WaitUntil(() => !playerMovement.IsMoving);
             }
 
-            //yield return new WaitForSeconds(1f); BROKEN?????? PRIEKSKAM TIMING VAJAG
-            turnManager.NextTurn(); 
+            yield return new WaitForSeconds(1f);
+            islanded = false; 
+            turnManager.NextTurn();
         }
         else
         {
             Debug.LogError("Player reference is missing in DiceRollScript!");
         }
-    }
 
+        yield return new WaitForSeconds(waitTime); 
+        canRoll = true; 
+    }
 
     public void ResetDice()
     {
@@ -93,7 +120,7 @@ public class DiceRollScript : MonoBehaviour
     {
         if (rigidbody != null)
         {
-            if (Input.GetMouseButton(0) && islanded || Input.GetMouseButton(0) && !firstThrow)
+            if ((Input.GetMouseButton(0) && islanded) || (Input.GetMouseButton(0) && !firstThrow))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;

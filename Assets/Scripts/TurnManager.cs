@@ -26,6 +26,19 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    public void SetFirstPlayer()
+    {
+        if (allPlayers.Count > 0)
+        {
+            currentPlayerIndex = 0; // Set to the first player
+            Debug.Log("First player set: " + allPlayers[currentPlayerIndex].name);
+        }
+        else
+        {
+            Debug.LogError("No players found in TurnManager!");
+        }
+    }
+
     public GameObject GetCurrentPlayer()
     {
         return currentPlayer;
@@ -33,17 +46,12 @@ public class TurnManager : MonoBehaviour
 
     public void NextTurn()
     {
-        Debug.Log($"Switching turn... Current Index: {currentPlayerIndex}, Current Player: {currentPlayer.name}");
-
         currentPlayerIndex = (currentPlayerIndex + 1) % allPlayers.Count;
         currentPlayer = allPlayers[currentPlayerIndex];
 
-        Debug.Log($"New Turn: {currentPlayer.name} (Index: {currentPlayerIndex})");
-
-        UpdatePlayerTurnText(); 
+        UpdatePlayerTurnText();
     }
 
-   
     private void UpdatePlayerTurnText()
     {
         if (playerTurnText != null && currentPlayer != null)
@@ -53,7 +61,9 @@ public class TurnManager : MonoBehaviour
             {
                 string playerName = nameScript.GetPlayerName();
 
-                playerTurnText.text = $"{playerName}'s Turn";
+                playerTurnText.text = $"{playerName} turn";
+
+                playerTurnText.color = nameScript.tMP.color;
             }
             else
             {

@@ -25,10 +25,12 @@ public class PlayerScript : MonoBehaviour
     mainCharacter.GetComponent<NameScript>().SetPlayerName(PlayerPrefs.GetString("PlayerName"));
     mainCharacter.GetComponent<PlayerMovement>().InitializeWaypoints(waypoints);
 
-    turnManager.allPlayers.Add(mainCharacter); 
+   
     allPlayers.Add(mainCharacter);
+     turnManager.allPlayers.Add(mainCharacter);
 
-    int otherPlayerCount = PlayerPrefs.GetInt("PlayerCount") - 1;
+
+        int otherPlayerCount = PlayerPrefs.GetInt("PlayerCount") - 1;
     string[] nameArray = ReadLinesFromFile("playerNames");
 
     for (int i = 0; i < otherPlayerCount; i++)
@@ -38,8 +40,9 @@ public class PlayerScript : MonoBehaviour
         character.GetComponent<NameScript>().SetPlayerName(nameArray[Random.Range(0, nameArray.Length)]);
         character.GetComponent<PlayerMovement>().InitializeWaypoints(waypoints);
 
-        turnManager.allPlayers.Add(character); 
+       
         allPlayers.Add(character);
+        turnManager.allPlayers.Add(character); 
     }
 
     turnManager.currentPlayer = turnManager.allPlayers[0]; 

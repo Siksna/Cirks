@@ -6,8 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     private Vector3 targetWaypoint;
     public bool IsMoving { get; private set; } = false;
-    public int currentWaypointIndex { get; private set; } = 0;  
-
+    public int currentWaypointIndex { get; private set; } = 0;
+    public DiceRollScript diceRollScript;
     public Transform[] waypoints;
 
     public void InitializeWaypoints(Transform[] waypointsArray)
@@ -37,9 +37,15 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        if (diceRollScript != null && !diceRollScript.islanded) 
+        {
+            Debug.LogWarning("Dice hasn't landed yet! Waiting...");
+            return;
+        }
+
         int nextWaypointIndex = currentWaypointIndex + diceRoll;
 
-        if (nextWaypointIndex < waypoints.Length)
+        if (nextWaypointIndex < waypoints.Length && diceRoll != 0)
         {
             StartCoroutine(MoveThroughWaypoints(nextWaypointIndex));
         }
@@ -49,10 +55,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private IEnumerator MoveThroughWaypoints(int targetWaypointIndex)
     {
         IsMoving = true;
-        float moveSpeed = 3f;
+        float moveSpeed = 6f;
 
         
         int startWaypoint = currentWaypointIndex;
@@ -60,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
         for (int i = startWaypoint + 1; i <= targetWaypointIndex; i++)
         {
             Vector3 targetPosition = waypoints[i].position;
+            Debug.Log(targetPosition + "Moving...");
 
             while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
@@ -71,10 +79,10 @@ public class PlayerMovement : MonoBehaviour
             transform.position = targetPosition;
             currentWaypointIndex = i;  
 
-            Debug.Log(gameObject.name + " reached waypoint " + currentWaypointIndex);
         }
 
         IsMoving = false;
+
     }
 
 
@@ -98,18 +106,4 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (IsMoving)
-        {
-            float step = Time.deltaTime * 3f;
-            transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, step);
-
-            if (Vector3.Distance(transform.position, targetWaypoint) < 0.01f) 
-            {
-                IsMoving = false;
-                Debug.Log(gameObject.name + " reached waypoint " + currentWaypointIndex);
-            }
-        }
-    }
 }

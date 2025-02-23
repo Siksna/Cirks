@@ -6,7 +6,7 @@ using TMPro;
 
 public class NameScript : MonoBehaviour
 {
-    TextMeshPro tMP;
+    public TextMeshPro tMP;
 
     void Awake()
     {
