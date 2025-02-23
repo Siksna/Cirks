@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3864ccc0ff2ea004b87ee8e96acee285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tMP: {fileID: 0}
 --- !u!95 &8108509112489991346
 Animator:
   serializedVersion: 5
@@ -111,7 +112,7 @@ Animator:
   m_GameObject: {fileID: 900151272745125326}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f803bd50b2c66c24d989a3b918d7ac47, type: 2}
+  m_Controller: {fileID: 9100000, guid: 94ecaa7344a307848a48d0fb5a83bc90, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -134,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036dd0daa477a3745a90a699cc13dec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diceRollScript: {fileID: 0}
   waypoints: []
 --- !u!114 &-3798748794998691022
 MonoBehaviour:

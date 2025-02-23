@@ -16,6 +16,7 @@ public class TurnManager : MonoBehaviour
         if (allPlayers.Count > 0)
         {
             currentPlayer = allPlayers[currentPlayerIndex];
+
             Debug.Log($"Starting game with {allPlayers.Count} players. First player: {currentPlayer.name}");
 
             UpdatePlayerTurnText();  // Display current player's name
