@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (diceRollScript != null && !diceRollScript.islanded) 
+        if (diceRollScript != null && !diceRollScript.islanded)
         {
             Debug.LogWarning("Dice hasn't landed yet! Waiting...");
             return;
@@ -45,8 +45,22 @@ public class PlayerMovement : MonoBehaviour
 
         int nextWaypointIndex = currentWaypointIndex + diceRoll;
 
-        if (nextWaypointIndex < waypoints.Length && diceRoll != 0)
+        // If there aren't enough waypoints, move to the last waypoint and then move back
+        if (nextWaypointIndex >= waypoints.Length)
         {
+            // Move to the last valid waypoint
+            nextWaypointIndex = waypoints.Length - 1;
+
+            // Calculate how much we need to move back after reaching the last waypoint
+            int remainingDiceRoll = nextWaypointIndex + 1 - (currentWaypointIndex + diceRoll);
+            Debug.Log(gameObject.name + " reached the end and will move back by " + remainingDiceRoll + " spaces.");
+
+            // Start the movement to the last waypoint
+            StartCoroutine(MoveThroughWaypoints(nextWaypointIndex, remainingDiceRoll));
+        }
+        else if (nextWaypointIndex < waypoints.Length && diceRoll != 0)
+        {
+            // Normal movement without exceeding the waypoints
             StartCoroutine(MoveThroughWaypoints(nextWaypointIndex));
         }
         else
@@ -56,34 +70,48 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private IEnumerator MoveThroughWaypoints(int targetWaypointIndex)
+    private IEnumerator MoveThroughWaypoints(int targetWaypointIndex, int remainingDiceRoll = 0)
     {
         IsMoving = true;
         float moveSpeed = 6f;
 
-        
         int startWaypoint = currentWaypointIndex;
 
+        // First, move to the last valid waypoint (if we reached the end)
         for (int i = startWaypoint + 1; i <= targetWaypointIndex; i++)
         {
             Vector3 targetPosition = waypoints[i].position;
-            Debug.Log(targetPosition + "Moving...");
-
             while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
                 yield return null;
             }
 
-            
             transform.position = targetPosition;
-            currentWaypointIndex = i;  
+            currentWaypointIndex = i;
+        }
 
+        // If there are remaining dice rolls after reaching the end, move back
+        if (remainingDiceRoll > 0)
+        {
+            for (int i = targetWaypointIndex - 1; i >= targetWaypointIndex - remainingDiceRoll; i--)
+            {
+                Vector3 targetPosition = waypoints[i].position;
+                while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+                    yield return null;
+                }
+
+                transform.position = targetPosition;
+                currentWaypointIndex = i;
+            }
         }
 
         IsMoving = false;
-
     }
+
+
 
 
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.51718736, g: 0.37541863, b: 0.55728436, a: 1}
+  m_IndirectSpecularColor: {r: 0.5171874, g: 0.37541887, b: 0.5572844, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3969,7 +3969,7 @@ MonoBehaviour:
   - {fileID: 2024817446}
   - {fileID: 2051055698}
   inputField: {fileID: 162269729}
-  playerCount: 2
+  playerCount: 4
   sceneChangeScript: {fileID: 850042581}
 --- !u!114 &850042583
 MonoBehaviour:
@@ -4764,7 +4764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.8364258, y: -4.7272644}
+  m_AnchoredPosition: {x: -2.8364258, y: -4.727234}
   m_SizeDelta: {x: 81.3101, y: 9.4547}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1023596850
@@ -8725,8 +8725,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b688918592c63eb42b2481c83a2894b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  lookSpeed: 2
 --- !u!1 &2040913230
 GameObject:
   m_ObjectHideFlags: 0
@@ -8873,8 +8871,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b688918592c63eb42b2481c83a2894b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  lookSpeed: 2
 --- !u!1 &2073214730
 GameObject:
   m_ObjectHideFlags: 0
