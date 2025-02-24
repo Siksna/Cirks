@@ -4,3 +4,5 @@ AlbertsNr2 - Rolls: 10, Time: 96.32 seconds
 
 Iveta - Rolls: 8, Time: 164.98 seconds
 
+Rihards - Rolls: 10, Time: 220.02 seconds
+

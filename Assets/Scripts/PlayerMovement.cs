@@ -66,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator MoveThroughWaypoints(int targetWaypointIndex, bool hasWon = false)
     {
         IsMoving = true;
-        float moveSpeed = 6f;
+        float moveSpeed = 3f;
         int startWaypoint = currentWaypointIndex;
 
         if (targetWaypointIndex >= waypoints.Length)

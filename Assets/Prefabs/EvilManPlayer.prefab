@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3864ccc0ff2ea004b87ee8e96acee285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tMP: {fileID: 0}
 --- !u!95 &5013626281278676637
 Animator:
   serializedVersion: 5
@@ -305,6 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036dd0daa477a3745a90a699cc13dec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diceRollScript: {fileID: 0}
   waypoints: []
 --- !u!114 &-3015601567489643294
 MonoBehaviour:
